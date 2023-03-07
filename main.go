@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-type TaskPayload struct {
-	UserWalletAddress string `json:"user_wallet_address"`
-}
-
 func Handler_task(w http.ResponseWriter, r *http.Request) {
 	user_wallet_address := "0x1234567890123456789012345678901234567890"
 

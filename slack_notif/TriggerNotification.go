@@ -49,7 +49,7 @@ func createHTTPTask(projectID, locationID, queueID, url, message string) (*tasks
 		return "", fmt.Errorf("json.Marshal: %v", err)
 	}
 
-	// Task payload.
+	
 	// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#CreateTaskRequest
 	req := &taskspb.CreateTaskRequest{
 		Parent: queuePath,

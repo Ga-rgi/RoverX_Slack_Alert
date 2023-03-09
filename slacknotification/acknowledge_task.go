@@ -51,7 +51,7 @@ func SendSlackNotification(address string, community string) {
 		message = fmt.Sprintf("%s has joined RoverX", truncatedAddress)
 	}
 
-	// Send the notification to the configured Slack channel (#new-users)
+	// Send the notification to the configured Slack channel (#general)
 	_, _, err := slackClient.PostMessage("#general", slack.MsgOptionText(message, false))
 	if err != nil {
 		log.Error().Err(err).Msg("failed to send Slack notification")

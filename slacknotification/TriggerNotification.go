@@ -46,7 +46,7 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) (*ta
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
-		return "", fmt.Errorf("json.Marshal: %v", err)
+		return nil, fmt.Errorf("json.Marshal: %v", err)
 	}
 
 	// Task payload.
@@ -68,7 +68,7 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) (*ta
 
 	createdTask, err := client.CreateTask(ctx, req)
 	if err != nil {
-		return "", fmt.Errorf("client.CreateTask: %v", err)
+		return nil, fmt.Errorf("client.CreateTask: %v", err)
 	}
 
 	return createdTask, nil

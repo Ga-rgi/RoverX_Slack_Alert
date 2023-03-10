@@ -2,9 +2,10 @@ package slacknotification
 
 import (
 	"encoding/json"
-	"fmt"
+	"os"
 
 	"github.com/Ga-rgi/RoverX_Slack_Alert/dao"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/slack-go/slack"
 )
@@ -40,20 +41,25 @@ func AcknowledgeTask(reqBody []byte) {
 
 func SendSlackNotification(address string, community string) {
 
-	slackClient := slack.New("xoxb-4911047364807-4949853786480-cu4JDuklOOajo4vqlCMYqSuv")
+	slackClient := slack.New("xoxb-4911047364807-4949853786480-5zbGyIcKJARzZM58dnohHyJK")
 	//Truncate address
 	truncatedAddress := address[:4] + "..." + address[len(address)-4:]
 
-	var message string
+	logger := zerolog.New(os.Stdout).Level(zerolog.InfoLevel)
+
+	// Create notification message
+	var notificationMessage string
 	if community != "" {
-		message = fmt.Sprintf("%s from %s has joined RoverX", truncatedAddress, community)
+		notificationMessage = truncatedAddress + " from " + community + " has joined RoverX "
+		logger.Info().Str("community", community).Msgf(notificationMessage, truncatedAddress, community)
 	} else {
-		message = fmt.Sprintf("%s has joined RoverX", truncatedAddress)
+		notificationMessage = truncatedAddress + " has joined RoverX"
+		logger.Info().Msgf(notificationMessage, truncatedAddress)
 	}
 
 	// Send the notification to the configured Slack channel (#new-users)
-	_, _, err := slackClient.PostMessage("#general", slack.MsgOptionText(message, false))
+	_, _, err := slackClient.PostMessage("#general", slack.MsgOptionText(notificationMessage, false))
 	if err != nil {
-		log.Error().Err(err).Msg("failed to send Slack notification")
+		logger.Error().Err(err).Msg("failed to send Slack notification")
 	}
 }

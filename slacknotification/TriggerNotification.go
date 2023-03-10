@@ -3,8 +3,8 @@ package slacknotification
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
@@ -16,29 +16,27 @@ func TriggerNotification(userWallet string) string {
 	locationID := "us-central1"
 	url := "app/v1/in_house/acknowledge_task"
 
-	task, err := createHTTPTask(projectID, locationID, queueID, url, userWallet)
-	if err != nil {
-		log.Fatalf("createHTTPTask: %v", err)
-	}
+	task := createHTTPTask(projectID, locationID, queueID, url, userWallet)
 
 	return task.GetName()
 
 }
 
 // createHTTPTask creates a new task with a HTTP target then adds it to a Queue.
-func createHTTPTask(projectID, locationID, queueID, url, userWallet string) (*taskspb.Task, error) {
+func createHTTPTask(projectID, locationID, queueID, url, userWallet string) *taskspb.Task {
 
 	//Cloud Tasks client instance.
 	// See https://godoc.org/cloud.google.com/go/cloudtasks/apiv2
 	ctx := context.Background()
 	client, err := cloudtasks.NewClient(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("NewClient: %v", err)
+		log.Error().Err(err).Msgf("NewClient: %v", err)
+		return nil
 	}
 	defer client.Close()
 
 	// Task queue path.
-	queuePath := fmt.Sprintf("projects/%s/locations/%s/queues/%s", projectID, locationID, queueID)
+	queuePath := "projects/" + projectID + "/locations/" + locationID + "/queues/" + queueID
 
 	payload := map[string]string{
 		"user_wallet_address": userWallet,
@@ -46,7 +44,7 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) (*ta
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
-		return "", fmt.Errorf("json.Marshal: %v", err)
+		log.Error().Err(err).Msgf("json.Marshal: %v", err)
 	}
 
 	// Task payload.
@@ -68,8 +66,9 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) (*ta
 
 	createdTask, err := client.CreateTask(ctx, req)
 	if err != nil {
-		return "", fmt.Errorf("client.CreateTask: %v", err)
+		log.Error().Err(err).Msgf("client.CreateTask: %v", err)
+		return nil
 	}
 
-	return createdTask, nil
+	return createdTask
 }

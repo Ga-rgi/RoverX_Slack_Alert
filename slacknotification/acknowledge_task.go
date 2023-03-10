@@ -37,7 +37,8 @@ func AcknowledgeTask(reqBody []byte) {
 }
 
 func SendSlackNotification(address string, community string) {
-
+	
+	//Add slack token here
 	slackClient := slack.New("xoxb-4911047364807-4949853786480-wrB9iQp7HkUAwZ77Dj9B1XdV")
 	//Truncate address
 	truncatedAddress := address[:4] + "..." + address[len(address)-4:]

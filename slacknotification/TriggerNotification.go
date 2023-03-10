@@ -15,7 +15,6 @@ func TriggerNotification(userWallet string) {
 	queueID := "my-queue"
 	locationID := "us-central1"
 	url := "app/v1/in_house/acknowledge_task"
-
 	createHTTPTask(projectID, locationID, queueID, url, userWallet)
 }
 

@@ -11,7 +11,6 @@ import (
 )
 
 func AcknowledgeTask(reqBody []byte) {
-
 	var taskPayload map[string]string
 	err := json.Unmarshal(reqBody, &taskPayload)
 	if err != nil {
@@ -32,7 +31,6 @@ func AcknowledgeTask(reqBody []byte) {
 	if !isWhitelisted {
 		log.Warn().Str("address", userWallet).Msg("unwhitelisted address")
 	}
-
 	SendSlackNotification(userWallet, dao.GetPartnerCommunity(userWallet))
 }
 
@@ -41,7 +39,6 @@ func SendSlackNotification(address string, community string) {
 	slackClient := slack.New("xoxb-4911047364807-4949853786480-wrB9iQp7HkUAwZ77Dj9B1XdV")
 	//Truncate address
 	truncatedAddress := address[:4] + "..." + address[len(address)-4:]
-
 	logger := zerolog.New(os.Stdout).Level(zerolog.InfoLevel)
 
 	// Create notification message

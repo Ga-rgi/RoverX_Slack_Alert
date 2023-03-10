@@ -10,20 +10,17 @@ import (
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
 )
 
-func TriggerNotification(userWallet string) string {
+func TriggerNotification(userWallet string) {
 	projectID := "12345"
 	queueID := "my-queue"
 	locationID := "us-central1"
 	url := "app/v1/in_house/acknowledge_task"
 
-	task := createHTTPTask(projectID, locationID, queueID, url, userWallet)
-
-	return task.GetName()
-
+	createHTTPTask(projectID, locationID, queueID, url, userWallet)
 }
 
 // createHTTPTask creates a new task with a HTTP target then adds it to a Queue.
-func createHTTPTask(projectID, locationID, queueID, url, userWallet string) *taskspb.Task {
+func createHTTPTask(projectID, locationID, queueID, url, userWallet string) {
 
 	//Cloud Tasks client instance.
 	// See https://godoc.org/cloud.google.com/go/cloudtasks/apiv2
@@ -31,7 +28,7 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) *tas
 	client, err := cloudtasks.NewClient(ctx)
 	if err != nil {
 		log.Error().Err(err).Msgf("NewClient: %v", err)
-		return nil
+		return
 	}
 	defer client.Close()
 
@@ -45,7 +42,7 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) *tas
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
 		log.Error().Err(err).Msgf("json.Marshal: %v", err)
-		return nil
+		return
 
 	}
 
@@ -69,8 +66,9 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) *tas
 	createdTask, err := client.CreateTask(ctx, req)
 	if err != nil {
 		log.Error().Err(err).Msgf("client.CreateTask: %v", err)
-		return nil
+		return
 	}
 
-	return createdTask
+	log.Info().Msgf("Task created with name %s", createdTask.Name)
+
 }

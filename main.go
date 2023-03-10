@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -11,9 +10,8 @@ import (
 func Handler_task(w http.ResponseWriter, r *http.Request) {
 	user_wallet_address := "0x4A906262CFE6B4de05A3E0b890Bf8eb4a4c2f30A"
 
-	task_name := slacknotification.TriggerNotification(user_wallet_address)
+	slacknotification.TriggerNotification(user_wallet_address)
 
-	fmt.Printf("Create Task : %s \n ", task_name)
 }
 
 func acknowledgeTaskHandler(w http.ResponseWriter, r *http.Request) {

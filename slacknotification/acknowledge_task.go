@@ -33,15 +33,12 @@ func AcknowledgeTask(reqBody []byte) {
 		log.Warn().Str("address", userWallet).Msg("unwhitelisted address")
 	}
 
-	//partner community for the user's address
-	partnerCommunity := dao.GetPartnerCommunity(userWallet)
-
-	SendSlackNotification(userWallet, partnerCommunity)
+	SendSlackNotification(userWallet, dao.GetPartnerCommunity(userWallet))
 }
 
 func SendSlackNotification(address string, community string) {
 
-	slackClient := slack.New("xoxb-4911047364807-4949853786480-5zbGyIcKJARzZM58dnohHyJK")
+	slackClient := slack.New("xoxb-4911047364807-4949853786480-wrB9iQp7HkUAwZ77Dj9B1XdV")
 	//Truncate address
 	truncatedAddress := address[:4] + "..." + address[len(address)-4:]
 

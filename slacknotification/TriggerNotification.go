@@ -45,6 +45,7 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) *tas
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
 		log.Error().Err(err).Msgf("json.Marshal: %v", err)
+
 	}
 
 	// Task payload.

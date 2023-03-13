@@ -5,25 +5,32 @@ import (
 	"net/http"
 
 	"github.com/Ga-rgi/RoverX_Slack_Alert/slacknotification"
+	"github.com/gin-gonic/gin"
 )
 
-func Handler_task(w http.ResponseWriter, r *http.Request) {
+func Handler_task(c *gin.Context) {
 	user_wallet_address := "0x4A906262CFE6B4de05A3E0b890Bf8eb4a4c2f30A"
 	slacknotification.TriggerNotification(user_wallet_address)
+
+	c.Status(http.StatusOK)
 }
 
-func acknowledgeTaskHandler(w http.ResponseWriter, r *http.Request) {
-	reqBody, err := ioutil.ReadAll(r.Body)
+func acknowledgeTaskHandler(c *gin.Context) {
+	reqBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		http.Error(w, "Failed to read request body", http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
 		return
 	}
 	slacknotification.AcknowledgeTask(reqBody)
-	w.WriteHeader(http.StatusOK)
+
+	c.Status(http.StatusOK)
 }
 
 func main() {
-	http.HandleFunc("/app/v1/in_house/task_trigger", Handler_task)
-	http.HandleFunc("/app/v1/in_house/acknowledge_task", acknowledgeTaskHandler)
-	http.ListenAndServe(":8080", nil)
+	router := gin.Default()
+
+	router.POST("/app/v1/in_house/task_trigger", Handler_task)
+	router.POST("/app/v1/in_house/acknowledge_task", acknowledgeTaskHandler)
+
+	router.Run(":8080")
 }

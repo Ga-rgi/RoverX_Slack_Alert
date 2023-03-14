@@ -1,37 +1,50 @@
 package slacknotification
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/rs/zerolog/log"
-
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
+	"context"
+	"encoding/json"
+	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
+	"os"
 )
 
 func TriggerNotification(userWallet string) {
-	projectID := "12345"
-	queueID := "my-queue"
-	locationID := "us-central1"
-	url := "app/v1/in_house/acknowledge_task"
-	createHTTPTask(projectID, locationID, queueID, url, userWallet)
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Error().Err(err).Msgf("Error loading .env file")
+		return
+	}
+
+	projectID := os.Getenv("PROJECT_ID")
+	queueID := os.Getenv("QUEUE_ID")
+	locationID := os.Getenv("LOCATION_ID")
+	url := os.Getenv("URL")
+
+	createHTTPTask(projectID, queueID, locationID, url, userWallet)
+
 }
 
-// createHTTPTask creates a new task with a HTTP target then adds it to a Queue.
-func createHTTPTask(projectID, locationID, queueID, url, userWallet string) {
+func NewClient(ctx context.Context) *cloudtasks.Client {
 
-	//Cloud Tasks client instance.
-	// See https://godoc.org/cloud.google.com/go/cloudtasks/apiv2
-	ctx := context.Background()
 	client, err := cloudtasks.NewClient(ctx)
 	if err != nil {
 		log.Error().Err(err).Msgf("NewClient: %v", err)
+	}
+	return client
+}
+
+// createHTTPTask creates a new task with a HTTP target then adds it to a Queue.
+func createHTTPTask(projectID, queueID, locationID, url, userWallet string) {
+
+	ctx := context.Background()
+	client := NewClient(ctx)
+	if client == nil {
 		return
 	}
-	defer client.Close()
 
-	// Task queue path.
 	queuePath := "projects/" + projectID + "/locations/" + locationID + "/queues/" + queueID
 
 	payload := map[string]string{
@@ -46,11 +59,9 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) {
 	}
 
 	// Task payload.
-	// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#CreateTaskRequest
 	req := &taskspb.CreateTaskRequest{
 		Parent: queuePath,
 		Task: &taskspb.Task{
-			// https://godoc.org/google.golang.org/genproto/googleapis/cloud/tasks/v2#HttpRequest
 			MessageType: &taskspb.Task_HttpRequest{
 				HttpRequest: &taskspb.HttpRequest{
 					HttpMethod: taskspb.HttpMethod_POST,
@@ -67,7 +78,5 @@ func createHTTPTask(projectID, locationID, queueID, url, userWallet string) {
 		log.Error().Err(err).Msgf("client.CreateTask: %v", err)
 		return
 	}
-
 	log.Info().Msgf("Task created with name %s", createdTask.Name)
-
 }

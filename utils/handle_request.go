@@ -12,7 +12,7 @@ func HandleRequest(c *gin.Context) string {
 
 	var taskPayload map[string]string
 	if err := c.BindJSON(&taskPayload); err != nil {
-		log.Error().Err(err).Msg("failed to parse request body")
+		log.Error().Err(err).Msg("Failed to parse request body")
 		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": "Failed to read request body"})
 		return ""
 	}

@@ -25,7 +25,6 @@ func TriggerNotification(userWallet string) {
 	url := os.Getenv("URL")
 
 	createHTTPTask(projectID, queueID, locationID, url, userWallet)
-	return
 }
 
 func NewClient(ctx context.Context) *cloudtasks.Client {
@@ -43,6 +42,7 @@ func createHTTPTask(projectID, queueID, locationID, url, userWallet string) {
 	ctx := context.Background()
 	client := NewClient(ctx)
 	if client == nil {
+		log.Error().Err(err).Msgf("Failed to create client: %v", err)
 		return
 	}
 

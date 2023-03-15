@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"regexp"
 
@@ -11,16 +9,11 @@ import (
 )
 
 func HandleRequest(c *gin.Context) string {
-	reqBody, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Failed to read request body"})
-		return ""
-	}
 
 	var taskPayload map[string]string
-	err = json.Unmarshal(reqBody, &taskPayload)
-	if err != nil {
+	if err := c.BindJSON(&taskPayload); err != nil {
 		log.Error().Err(err).Msg("failed to parse request body")
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": "Failed to read request body"})
 		return ""
 	}
 

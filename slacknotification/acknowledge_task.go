@@ -16,7 +16,7 @@ func AcknowledgeTask(userWallet string) {
 
 	//log the address if it's not whitelisted
 	if !isWhitelisted {
-		log.Warn().Str("address", userWallet).Msg("unwhitelisted address")
+		log.Warn().Str("address", userWallet).Msg("non-whitelisted address")
 	}
 	SendSlackNotification(userWallet, dao.GetPartnerCommunity(userWallet))
 }

@@ -80,5 +80,4 @@ func createHTTPTask(projectID, queueID, locationID, url, userWallet string) {
 		return
 	}
 	log.Info().Msgf("Task created with name %s", createdTask.Name)
-	return
 }

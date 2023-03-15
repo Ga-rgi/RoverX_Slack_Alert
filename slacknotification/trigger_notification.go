@@ -42,7 +42,7 @@ func createHTTPTask(projectID, queueID, locationID, url, userWallet string) {
 	ctx := context.Background()
 	client := NewClient(ctx)
 	if client == nil {
-		log.Error().Err(err).Msgf("Failed to create client: %v", err)
+		log.Error().Msgf("Failed to create client")
 		return
 	}
 

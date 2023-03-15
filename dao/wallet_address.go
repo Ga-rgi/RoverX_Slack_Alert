@@ -18,12 +18,9 @@ func CheckAddressWhitelisted(address string) bool {
 	return false
 }
 
-// user addresses
-func WhitelistAddresses() {
-	//whitelisted
-	whitelistAddresses = append(whitelistAddresses, WhitelistedAddresses{Address: "0x4A906262CFE6B4de05A3E0b890Bf8eb4a4c2f30A", IsWhitelisted: true, PartnerCommunity: "ZenAcademy"})
 
-	//NO COMMUNITY
+func WhitelistAddresses() {
+	whitelistAddresses = append(whitelistAddresses, WhitelistedAddresses{Address: "0x4A906262CFE6B4de05A3E0b890Bf8eb4a4c2f30A", IsWhitelisted: true, PartnerCommunity: "ZenAcademy"})
 	whitelistAddresses = append(whitelistAddresses, WhitelistedAddresses{Address: "0x4A906262CFE6B4de05A3E0b890Bf8eb4a4c2f30B", IsWhitelisted: true, PartnerCommunity: ""})
 }
 

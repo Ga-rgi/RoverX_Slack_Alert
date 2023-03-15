@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="92f36cc7-5028-4b80-9e5e-639ca3f9d0a7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/handle_request.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/handle_request.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

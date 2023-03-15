@@ -2,10 +2,12 @@ package utils
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
+	"regexp"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 func HandleRequest(c *gin.Context) string {
@@ -28,4 +30,9 @@ func HandleRequest(c *gin.Context) string {
 		return ""
 	}
 	return userWallet
+}
+
+func IsAddressValid(userWallet string) bool {
+	AddressRegex := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+	return AddressRegex.MatchString(userWallet)
 }

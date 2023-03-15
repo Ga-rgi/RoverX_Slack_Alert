@@ -1,13 +1,14 @@
 package slacknotification
 
 import (
-	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
-	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
 	"context"
 	"encoding/json"
+	"os"
+
+	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
+	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func TriggerNotification(userWallet string) {
@@ -24,7 +25,7 @@ func TriggerNotification(userWallet string) {
 	url := os.Getenv("URL")
 
 	createHTTPTask(projectID, queueID, locationID, url, userWallet)
-
+	return
 }
 
 func NewClient(ctx context.Context) *cloudtasks.Client {
@@ -79,4 +80,5 @@ func createHTTPTask(projectID, queueID, locationID, url, userWallet string) {
 		return
 	}
 	log.Info().Msgf("Task created with name %s", createdTask.Name)
+	return
 }
